@@ -21,3 +21,7 @@ We prepared five virtual machines with vagrant to serve our service. All VMs mus
 system.
 
 We launch a sample web site and serve it via a proxy. On the other hand, our client must be routed with BGP protocol to access web content. In the end, we made some tuning on the proxy server to improve performance and having logs.
+
+![scenario](https://github.com/YaserAmini88/TaskAssignment/assets/51445051/7fdde49d-5f0f-4a18-85fb-bb8068bd0f3c)
+
+
