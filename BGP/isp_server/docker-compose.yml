@@ -1,0 +1,13 @@
+version: '3'
+services:
+  isp_bird:
+    image: ibhde/bird4
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+      - NET_RAW
+    container_name: bgp_bird
+    network_mode: host
+    volumes:
+      - ./bird.conf:/etc/bird/bird.conf
+    restart: always
