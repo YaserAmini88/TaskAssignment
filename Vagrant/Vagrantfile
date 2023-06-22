@@ -1,0 +1,60 @@
+Vagrant.configure("2") do |config|
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = "2024"
+      vb.cpus = 1
+    end
+  
+    config.vm.define "client" do |client|
+      client.vm.box = "ubuntu/focal64"
+      client.vm.provider "virtualbox" do |vb|
+        vb.name = "client"
+      end
+      client.vm.network "private_network", ip: "192.168.3.100", virtualbox__intnet: "client_isp_network"
+      client.vm.hostname = "client"
+      client.vm.provision "shell",
+        run: "always",
+        inline: "sudo ip route add default via 192.168.3.200"
+    end
+  
+    config.vm.define "isp_router" do |isp_router|
+      isp_router.vm.box = "ubuntu/focal64"
+      isp_router.vm.provider "virtualbox" do |vb|
+        vb.name = "isp_router"
+      end
+      isp_router.vm.network "private_network", ip: "192.168.3.200", virtualbox__intnet: "client_isp_network"
+      isp_router.vm.network "private_network", ip: "192.168.4.100", virtualbox__intnet: "isp_edge_network"
+      isp_router.vm.hostname = "isprouter"
+    end
+  
+    config.vm.define "edge_server" do |edge_server|
+      edge_server.vm.box = "ubuntu/focal64"
+      edge_server.vm.provider "virtualbox" do |vb|
+        vb.name = "edge_server"
+      end
+      edge_server.vm.network "private_network", ip: "192.168.4.200", virtualbox__intnet: "isp_edge_network"
+      edge_server.vm.network "private_network", ip: "192.168.5.100", virtualbox__intnet: "edge_local_network"
+    end
+  
+    config.vm.define "web_server" do |web_server|
+      web_server.vm.box = "ubuntu/focal64"
+      web_server.vm.provider "virtualbox" do |vb|
+        vb.name = "web_server"
+      end
+      web_server.vm.network "private_network", ip: "192.168.5.101", virtualbox__intnet: "edge_local_network"
+      web_server.vm.hostname = "webserver"
+      #web_server.vm.network "forwarded_port", guest: 80, host: 8080
+    end
+  
+    config.vm.define "logger" do |logger|
+      logger.vm.box = "ubuntu/focal64"
+      logger.vm.provider "virtualbox" do |vb|
+        vb.name = "logger"
+        vb.memory = "8192"
+      end
+      logger.vm.network "private_network", ip: "192.168.5.102", virtualbox__intnet: "edge_local_network"
+      logger.vm.hostname = "logger"
+      logger.vm.network "forwarded_port", guest: 9200, host: 9200
+      logger.vm.network "forwarded_port", guest: 5601, host: 5601
+    end
+  end
+  
