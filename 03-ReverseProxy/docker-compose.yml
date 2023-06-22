@@ -1,0 +1,12 @@
+version: '3'
+services:
+  nginx-reverse:
+    image: fholzer/nginx-brotli:latest
+    container_name: nginx-reverse
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./demo.local.domain.conf:/etc/nginx/conf.d/demo.local.domain.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx
