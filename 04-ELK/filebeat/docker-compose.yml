@@ -1,0 +1,11 @@
+version: '3'
+services:
+  filebeat:
+    container_name: filebeat
+    restart: always
+    image: elastic/filebeat:7.17.10
+    volumes:
+      - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /opt/nginx-reverse/logs/access.log:/var/log/nginx/access.log
+      - /opt/nginx-reverse/logs/error.log:/var/log/nginx/error.log
+    command: filebeat -e -strict.perms=false
